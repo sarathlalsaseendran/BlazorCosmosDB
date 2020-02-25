@@ -1,0 +1,51 @@
+﻿@using BlazorCosmosDB.Data
+
+@page "/listemployees"
+@inject IEmployeeService EmployeeService
+
+<h2>Employee Details</h2>
+<p>
+    <a href="/addemployee">Create New Employee</a>
+</p>
+@if (employees == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <table class='table'>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Designation</th>
+                <th>Company</th>
+                <th>City</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var employee in employees)
+            {
+                <tr>
+                    <td>@employee.Name</td>
+                    <td>@employee.Designation</td>
+                    <td>@employee.Company</td>
+                    <td>@employee.City</td>
+                    <td>
+                        <a href='/editemployee/@employee.Id/@employee.City'>Edit</a>
+                        <a href='/deleteemployee/@employee.Id/@employee.City'>Delete</a>
+                    </td>
+                </tr>
+
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    IEnumerable<Employee> employees;
+
+    protected override async Task OnInitializedAsync()
+    {
+        employees = await EmployeeService.GetEmployeesAsync("SELECT * FROM c");
+    }
+}   
